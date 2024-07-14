@@ -81,6 +81,7 @@ class load_dataset(Dataset):
                 file_path = self.files_path[0:-10] + str(i + 1) + self.files_path[-9:]
             with open(file_path, 'r') as f:
                 rdr = csv.reader(f)
+                next(rdr)  # 跳过第一行
                 for index, row in enumerate(rdr):
                     for t, colcell in enumerate(row):
                         if colcell == '?':

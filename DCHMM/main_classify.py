@@ -74,7 +74,9 @@ dataset_list = {
     'SWJ': {'name': 'StandWalkJump', 'train_size': '12', 'test_size': '15', 'dims': '4', 'length': '2500',
             'classes': '3', 'batch_size': '1'},
     'UWGL': {'name': 'UWaveGestureLibrary', 'train_size': '120', 'test_size': '320', 'dims': '3', 'length': '315',
-             'classes': '8', 'batch_size': '12'}}
+             'classes': '8', 'batch_size': '12'},
+     'SPI': {'name': 'SharePriceIncrease', 'train_size': '965', 'test_size': '965', 'dims': '1', 'length': '60',
+              'classes': '2', 'batch_size': '1'}  }
 
 
 def setup_logger(logger_name, log_file, level=logging.INFO):
@@ -106,7 +108,7 @@ def load_pretrained(dict1, dict2):
     return dict2
 
 parser1 = argparse.ArgumentParser(description='pre-input')
-parser1.add_argument('--target-dataset', type=str, default='JV', help='None')
+parser1.add_argument('--target-dataset', type=str, default='SPI', help='None')
 parser1.add_argument('--machine-idx', type=str, default='v1', help='None')
 parser1.add_argument('--v-dims', type=int, default=128, help='None')
 args1 = parser1.parse_args()
@@ -211,9 +213,9 @@ def main():
     train_epoch = args.epoch
     batch_size = args.batch_size
 
-    train_set_path = args.dataset_dir + '/' + args.datasetname + '/' + args.datasetname + 'Dimension1_TRAIN.csv'
+    train_set_path = args.dataset_dir + '/' + args.datasetname + '/' + args.datasetname + '_TRAIN.csv'
     train_label_path = args.dataset_dir + '/' + args.datasetname + '/train_label.csv'
-    val_set_path = args.dataset_dir + '/' + args.datasetname + '/' + args.datasetname + 'Dimension1_TEST.csv'
+    val_set_path = args.dataset_dir + '/' + args.datasetname + '/' + args.datasetname + '_TEST.csv'
     val_label_path = args.dataset_dir + '/' + args.datasetname + '/test_label.csv'
 
     train_dataset = load_dataset(args, train_set_path, train_label_path, train=True)
