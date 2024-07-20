@@ -16,7 +16,7 @@ from DCHMM import *
 warnings.filterwarnings('ignore')
 
 dataset_list = {
-   'SPI': {'name': 'SharePriceIncrease', 'train_size': '965', 'test_size': '965', 'dims': '1', 'length': '60',
+   'SPI': {'name': 'SharePriceIncrease', 'train_size': '83897', 'test_size': '9715', 'dims': '16', 'length': '60',
             'classes': '2', 'batch_size': '1'}}
 
 def setup_logger(logger_name, log_file, level=logging.INFO):
@@ -35,7 +35,7 @@ def setup_logger(logger_name, log_file, level=logging.INFO):
 parser1 = argparse.ArgumentParser(description='pre-input')
 parser1.add_argument('--target-dataset', type=str, default='SPI', help='None')
 parser1.add_argument('--machine-idx', type=str, default='v1', help='None')
-parser1.add_argument('--v-dims', type=int, default=128, help='None')
+parser1.add_argument('--v-dims', type=int, default=3, help='None')
 args1 = parser1.parse_args()
 
 
@@ -125,10 +125,10 @@ def main():
     train_epoch = args.epoch
     batch_size = args.batch_size
 
-    train_set_path = '/root/autodl-tmp/SharePriceIncrease/SharePriceIncrease_TRAIN.csv'
-    train_label_path = args.dataset_dir + '/' + args.datasetname + '/train_label.csv'
-    val_set_path = '/root/autodl-tmp/SharePriceIncrease/SharePriceIncrease_TRAIN.csv'
-    val_label_path = args.dataset_dir + '/' + args.datasetname + '/test_label.csv'
+    train_set_path = '/root/FinRL_DCHMM/DCHMM/train_data.csv'
+    train_label_path = '/root/FinRL_DCHMM/DCHMM/train_data.csv'
+    val_set_path = '/root/FinRL_DCHMM/DCHMM/trade_data.csv'
+    val_label_path = '/root/FinRL_DCHMM/DCHMM/trade_data.csv'
 
     train_dataset = load_dataset(args, train_set_path, train_label_path, train=True)
     val_dataset = load_dataset(args, val_set_path, val_label_path, train=False)
@@ -140,8 +140,8 @@ def main():
     print(mi, ma)
     del mi1, mi2, mi, ma1, ma2, ma
 
-    train_dataset.normal_data()
-    val_dataset.normal_data()
+    train_dataset.normal_data_new()
+    val_dataset.normal_data_new()
 
     train_dataset.print_features()
     val_dataset.print_features()
