@@ -38,6 +38,7 @@ def train(args, hmm_model: Model, train_dataset, batch_size, optimizer_hmm,
     for i_batch, (sample_batched) in enumerate(train_loader):  # 第i个batch
 
         input = torch.tensor(sample_batched[0], device=args.device)
+        print(input)
         gt_y = torch.tensor(sample_batched[1], device=args.device)
 
         # args.h_size
@@ -58,6 +59,7 @@ def train(args, hmm_model: Model, train_dataset, batch_size, optimizer_hmm,
                 input_t_last = input[:, index - 1]
             if input_t.sum() == 0:
                 break
+            print(f"input_t shape: {input_t.shape}")  # 添加这一行来打印 input_t 的形状
             vae_rec_input_t, mu_h, logvar_h, mu_h_prior, logvar_h_prior \
                 = hmm_model(input_t)
 

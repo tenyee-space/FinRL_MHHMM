@@ -99,6 +99,7 @@ class MLP(nn.Module):
                                  nn.Tanh() if activate else nn.Identity())
 
     def forward(self, x):
+        print(f"MLP input shape: {x.shape}")  # 添加这一行来打印输入形状
         return self.mlp(x)
 
 
@@ -119,7 +120,11 @@ class prior_chain(nn.Module):
             if self.k > 1:
                 x_t = self.position_encoder(x_t)
                 x_t, _ = self.attention(x_t, h_last)
-            h_t = self.gru(x_t.squeeze(0), h_last)
+            print("x_t size: ", x_t.size())
+            print("h_last size: ", h_last.size())
+            # 修改点
+            # h_t = self.gru(x_t.squeeze(0), h_last)
+            h_t = self.gru(x_t, h_last)
             return h_t
 
 
@@ -161,6 +166,12 @@ class post_chain(nn.Module):
             x_in = x[0] * self.factor[0]
             for i in range(self.k - 1):
                 x_in += x[i + 1] * self.factor[i + 1]
+            # 修改点
+            # 确保 x_in 和 h_last 至少是2维的
+            if x_in.dim() == 1:
+                x_in = x_in.unsqueeze(0)
+            if h_last.dim() == 1:
+                h_last = h_last.unsqueeze(0)
 
             return self.post_fc(torch.cat((x_in, h_last), 1))
 
@@ -209,10 +220,12 @@ class prior_pyramid_HMM(nn.Module):
         self.out_fc2 = nn.Linear(m * h_dim + h_dim, m * h_dim + h_dim).to(device)
 
     def forward(self, x):
+        print(f"Input shape: {x.shape}")  # 添加这一行来打印输入形状
         self.h = None
         for i in range(self.m + 1):
             if self.h is None:
                 x = self.Encoder(x)
+                print(f"After Encoder shape: {x.shape}")  # 添加这一行来打印输入形状
                 h = self.chain_list[i](x)
                 self.h = h
             else:
