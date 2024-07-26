@@ -93,9 +93,9 @@ class Attention(nn.Module):
 class MLP(nn.Module):
     def __init__(self, in_dim, out_dim, activate=True):
         super(MLP, self).__init__()
-        self.mlp = nn.Sequential(nn.Linear(in_dim, 4 * out_dim),
+        self.mlp = nn.Sequential(nn.Linear(in_dim, out_dim),
                                  nn.GELU(),
-                                 nn.Linear(4 * out_dim, out_dim),
+                                 nn.Linear(out_dim, out_dim),
                                  nn.Tanh() if activate else nn.Identity())
 
     def forward(self, x):
@@ -111,7 +111,7 @@ class prior_chain(nn.Module):
         self.k = k
 
         # 修改点 确保 GRUCell 的输入和隐藏状态维度一致
-        self.gru = nn.GRUCell(self.h_dim, self.h_dim)
+        self.gru = nn.GRUCell(self.i_dim, self.h_dim)
         # self.gru = nn.GRUCell(self.i_dim, self.h_dim)
         if self.k > 1:
             self.attention = Attention(self.i_dim, self.h_dim)  # x: k, batch, dim

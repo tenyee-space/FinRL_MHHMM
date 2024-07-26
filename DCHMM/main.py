@@ -16,8 +16,8 @@ from DCHMM import *
 warnings.filterwarnings('ignore')
 
 dataset_list = {
-   'SPI': {'name': 'SharePriceIncrease', 'train_size': '83897', 'test_size': '9715', 'dims': '1', 'length': '60',
-            'classes': '1', 'batch_size': '1'}}
+   'SPI': {'name': 'SharePriceIncrease', 'train_size': '83897', 'test_size': '9715', 'dims': '16', 'length': '60',
+            'classes': '2', 'batch_size': '4'}}
 
 def setup_logger(logger_name, log_file, level=logging.INFO):
     l = logging.getLogger(logger_name)
@@ -26,7 +26,6 @@ def setup_logger(logger_name, log_file, level=logging.INFO):
     fileHandler.setFormatter(formatter)
     streamHandler = logging.StreamHandler()
     streamHandler.setFormatter(formatter)
-
     l.setLevel(level)
     l.addHandler(fileHandler)
     l.addHandler(streamHandler)
@@ -35,7 +34,7 @@ def setup_logger(logger_name, log_file, level=logging.INFO):
 parser1 = argparse.ArgumentParser(description='pre-input')
 parser1.add_argument('--target-dataset', type=str, default='SPI', help='None')
 parser1.add_argument('--machine-idx', type=str, default='v1', help='None')
-parser1.add_argument('--v-dims', type=int, default=3, help='None')
+parser1.add_argument('--v-dims', type=int, default=4, help='None')
 args1 = parser1.parse_args()
 
 
