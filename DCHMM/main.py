@@ -34,7 +34,7 @@ def setup_logger(logger_name, log_file, level=logging.INFO):
 parser1 = argparse.ArgumentParser(description='pre-input')
 parser1.add_argument('--target-dataset', type=str, default='SPI', help='None')
 parser1.add_argument('--machine-idx', type=str, default='v1', help='None')
-parser1.add_argument('--v-dims', type=int, default=4, help='None')
+parser1.add_argument('--v-dims', type=int, default=3, help='None')
 args1 = parser1.parse_args()
 
 
