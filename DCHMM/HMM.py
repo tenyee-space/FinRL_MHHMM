@@ -110,21 +110,27 @@ class prior_chain(nn.Module):
         self.h_dim = h_dim
         self.k = k
 
-        self.gru = nn.GRUCell(self.i_dim, self.h_dim)
+        # 修改点 确保 GRUCell 的输入和隐藏状态维度一致
+        self.gru = nn.GRUCell(self.h_dim, self.h_dim)
+        # self.gru = nn.GRUCell(self.i_dim, self.h_dim)
         if self.k > 1:
             self.attention = Attention(self.i_dim, self.h_dim)  # x: k, batch, dim
             self.position_encoder = LearnableAbsolutePositionEmbedding(self.k, i_dim)  # x:batch, k, dim
+        # 修改点 添加一个全连接层来调整维度
+        self.fc = nn.Linear(self.i_dim, self.h_dim)
 
     def forward(self, x_t, h_last: torch.Tensor):
         if isinstance(x_t, torch.Tensor):
             if self.k > 1:
                 x_t = self.position_encoder(x_t)
                 x_t, _ = self.attention(x_t, h_last)
+
+            # 修改点 使用全连接层调整维度
+            x_t = self.fc(x_t)
+
             print("x_t size: ", x_t.size())
             print("h_last size: ", h_last.size())
-            # 修改点
-            # h_t = self.gru(x_t.squeeze(0), h_last)
-            h_t = self.gru(x_t, h_last)
+            h_t = self.gru(x_t.squeeze(0), h_last)
             return h_t
 
 
@@ -135,6 +141,11 @@ class prior_stacked_chain(nn.Module):
         self.chain = prior_chain(i_dim, h_dim, k)
         self.h0 = init_state
         self.h_t = init_state
+
+        # 修改点：确保 init_state 的维度与 h_dim 一致
+        if self.h0.size(1) != h_dim:
+            self.h0 = torch.zeros(self.h0.size(0), h_dim, device=self.h0.device)
+            self.h_t = self.h0
 
     def forward(self, x_t):
         if isinstance(x_t, torch.Tensor):
@@ -166,12 +177,6 @@ class post_chain(nn.Module):
             x_in = x[0] * self.factor[0]
             for i in range(self.k - 1):
                 x_in += x[i + 1] * self.factor[i + 1]
-            # 修改点
-            # 确保 x_in 和 h_last 至少是2维的
-            if x_in.dim() == 1:
-                x_in = x_in.unsqueeze(0)
-            if h_last.dim() == 1:
-                h_last = h_last.unsqueeze(0)
 
             return self.post_fc(torch.cat((x_in, h_last), 1))
 
