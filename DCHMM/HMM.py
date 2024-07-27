@@ -95,7 +95,7 @@ class MLP(nn.Module):
         super(MLP, self).__init__()
         self.mlp = nn.Sequential(nn.Linear(in_dim, out_dim),
                                  nn.GELU(),
-                                 nn.Linear(out_dim * 4, out_dim),
+                                 nn.Linear(out_dim, out_dim),
                                  nn.Tanh() if activate else nn.Identity())
 
     def forward(self, x):
@@ -110,14 +110,10 @@ class prior_chain(nn.Module):
         self.h_dim = h_dim
         self.k = k
 
-        # 修改点 确保 GRUCell 的输入和隐藏状态维度一致
         self.gru = nn.GRUCell(self.i_dim, self.h_dim)
-        # self.gru = nn.GRUCell(self.i_dim, self.h_dim)
         if self.k > 1:
             self.attention = Attention(self.i_dim, self.h_dim)  # x: k, batch, dim
             self.position_encoder = LearnableAbsolutePositionEmbedding(self.k, i_dim)  # x:batch, k, dim
-        # 修改点 添加一个全连接层来调整维度
-        self.fc = nn.Linear(self.i_dim, self.h_dim)
 
     def forward(self, x_t, h_last: torch.Tensor):
         if isinstance(x_t, torch.Tensor):
@@ -125,8 +121,6 @@ class prior_chain(nn.Module):
                 x_t = self.position_encoder(x_t)
                 x_t, _ = self.attention(x_t, h_last)
 
-            # 修改点 使用全连接层调整维度
-            x_t = self.fc(x_t)
 
             print("x_t size: ", x_t.size())
             print("h_last size: ", h_last.size())
