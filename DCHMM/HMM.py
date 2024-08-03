@@ -1,6 +1,6 @@
 import torch
 from torch import nn
-
+import pandas as pd
 
 class LearnableAbsolutePositionEmbedding(nn.Module):
     def __init__(self, max_position_embeddings, hidden_size):
@@ -93,13 +93,20 @@ class Attention(nn.Module):
 class MLP(nn.Module):
     def __init__(self, in_dim, out_dim, activate=True):
         super(MLP, self).__init__()
-        self.mlp = nn.Sequential(nn.Linear(in_dim, out_dim),
+        print(f"Initializing MLP with in_dim: {in_dim}, out_dim: {out_dim}")
+        # if in_dim == 16:
+        #     in_dim = int(0.25 * in_dim)
+        # self.mlp = nn.Sequential(nn.Linear(in_dim, 4 * out_dim),
+        #                          nn.GELU(),
+        #                          nn.Linear(out_dim, out_dim),
+        #                          nn.Tanh() if activate else nn.Identity())
+        self.mlp = nn.Sequential(nn.Linear(in_dim, 4 * out_dim),
                                  nn.GELU(),
-                                 nn.Linear(out_dim, out_dim),
+                                 nn.Linear(4 * out_dim, out_dim),
                                  nn.Tanh() if activate else nn.Identity())
 
     def forward(self, x):
-        print(f"MLP input shape: {x.shape}")  # 添加这一行来打印输入形状
+        # print(f"MLP input shape: {x.shape}")  # 添加这一行来打印输入形状
         return self.mlp(x)
 
 
@@ -122,8 +129,8 @@ class prior_chain(nn.Module):
                 x_t, _ = self.attention(x_t, h_last)
 
 
-            print("x_t size: ", x_t.size())
-            print("h_last size: ", h_last.size())
+            # print("x_t size: ", x_t.size())
+            # print("h_last size: ", h_last.size())
             h_t = self.gru(x_t.squeeze(0), h_last)
             return h_t
 
@@ -219,12 +226,12 @@ class prior_pyramid_HMM(nn.Module):
         self.out_fc2 = nn.Linear(m * h_dim + h_dim, m * h_dim + h_dim).to(device)
 
     def forward(self, x):
-        print(f"Input shape: {x.shape}")  # 添加这一行来打印输入形状
+        # print(f"Input shape: {x.shape}")  # 添加这一行来打印输入形状
         self.h = None
         for i in range(self.m + 1):
             if self.h is None:
                 x = self.Encoder(x)
-                print(f"After Encoder shape: {x.shape}")  # 添加这一行来打印输入形状
+                # print(f"After Encoder shape: {x.shape}")  # 添加这一行来打印输入形状
                 h = self.chain_list[i](x)
                 self.h = h
             else:
@@ -325,17 +332,32 @@ class post_pyramid_HMM(nn.Module):
 
 
 if __name__ == '__main__':
-    device = torch.device('cuda:0')
-    init = torch.zeros(4, 128, device=device)
-    model = prior_pyramid_HMM(10, 128, 3, 3, init, device)
+    device = torch.device('cpu')
+    init = torch.zeros(4, 3, device=device)
+    # model = prior_pyramid_HMM(10, 128, 3, 3, init, device)
+    # i_dim, h_dim, k, m, init_state, device
+    model = prior_pyramid_HMM(1, 3, 3, 3, init, device)
     model._init_papameters()
     model.to(device)
-    data = torch.randn(100, 200, 10, device=device)
+    # data = torch.randn(100, 200, 10, device=device)
+    train_set_path = '/root/FinRL_DCHMM/DCHMM/train_data.csv'
+    data_csv = pd.read_csv(train_set_path)
+    columns = ['volume']
+    data = data_csv[columns]
+    tensor_data = torch.tensor(data.values, dtype=torch.float32)
+    print(f"data size: {data.shape}")
     import time
 
     t = time.time()
-    for i in range(25):
-        for j in range(200):
-            x = model(data[4 * i:4 * i + 4, j, :])
+    # for i in range(25):
+    #     for j in range(200):
+    #         x = model(data[4 * i:4 * i + 4, j, :])
+
+    num_batches = 83897 // 4
+
+    # 迭代每个 batch 并传入模型
+    for i in range(num_batches):
+        # 每次取 4 行数据
+        x = model(tensor_data[4 * i:4 * i + 4])
 
     print(time.time() - t)
