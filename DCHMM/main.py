@@ -54,7 +54,8 @@ parser.add_argument('--series-length-file', type=str, default='', help='the-leng
 
 parser.add_argument('--input_dim', type=int, default=dataset_list[target_dataset]['dims'], help='None')
 parser.add_argument('--hidden_dim', type=int, default=v_dims, help='None')
-parser.add_argument('--k', type=int, default=5, help='None')
+# parser.add_argument('--k', type=int, default=5, help='None')
+parser.add_argument('--k', type=int, default=3, help='None')
 parser.add_argument('--m', type=int, default=3, help='None')
 parser.add_argument('--class_num', type=int, default=dataset_list[target_dataset]['classes'], help='None')
 parser.add_argument('--input_fc_dim', type=int, default=v_dims, help='input_fc_dim')
@@ -163,7 +164,7 @@ def main():
         torch.cuda.empty_cache()
         if epoch - last_epoch > 100:
             break
-        
+
         if acc_val_value > current_best_acc:
             current_best_acc = acc_val_value
             torch.save(hmm_model.state_dict(), os.path.join(save_dir, 'HMM_model_epoch_{0}.pkl'.format(epoch)))
