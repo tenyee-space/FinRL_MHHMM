@@ -59,14 +59,14 @@ class load_dataset(Dataset):
 
     def normal_data_new(self):
         # 将数据转换为 DataFrame 以便处理
-        # data = pd.DataFrame(self.features, columns=[
-        #     'open', 'high', 'low', 'close', 'volume', 'day', 'macd', 'boll_ub',
-        #     'boll_lb', 'rsi_30', 'cci_30', 'dx_30', 'close_30_sma', 'close_60_sma',
-        #     'vix', 'turbulence'
-        # ])
         data = pd.DataFrame(self.features, columns=[
-            'volume'
+            'open', 'high', 'low', 'close', 'volume', 'day', 'macd', 'boll_ub',
+            'boll_lb', 'rsi_30', 'cci_30', 'dx_30', 'close_30_sma', 'close_60_sma',
+            'vix', 'turbulence'
         ])
+        # data = pd.DataFrame(self.features, columns=[
+        #     'volume'
+        # ])
         
         # 遍历每一列进行归一化处理
         for column in data.columns:
@@ -94,14 +94,14 @@ class load_dataset(Dataset):
         data = pd.read_csv(self.files_path)
         
         # 提取特征列
-        # feature_columns = [
-        #     'open', 'high', 'low', 'close', 'volume', 'day', 'macd', 'boll_ub',
-        #     'boll_lb', 'rsi_30', 'cci_30', 'dx_30', 'close_30_sma', 'close_60_sma',
-        #     'vix', 'turbulence'
-        # ]
         feature_columns = [
-            'volume'
+            'open', 'high', 'low', 'close', 'volume', 'day', 'macd', 'boll_ub',
+            'boll_lb', 'rsi_30', 'cci_30', 'dx_30', 'close_30_sma', 'close_60_sma',
+            'vix', 'turbulence'
         ]
+        # feature_columns = [
+        #     'volume'
+        # ]
         self.features = data[feature_columns].values
         
         # 提取标签列
