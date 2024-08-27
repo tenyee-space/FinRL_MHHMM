@@ -43,11 +43,14 @@ def val(args, hmm_model: Model, val_dataset, batch_size, writer, epoch, n_iter, 
             logit = None
             for index in range(len(input[0])):  # the len of time series
                 if index == 0:
-                    input_t = input[:, index]
+                    # input_t = input[:, index]
+                    input_t = input
                     input_t_last = torch.zeros_like(input_t)
                     h_t_last = h0
                 else:
-                    input_t = input[:, index]
+                    # 修改点 修改格式
+                    input_t = input
+                    # input_t = input[:, index]
                     input_t_last = input[:, index - 1]
                 if input_t.sum() == 0:
                     break

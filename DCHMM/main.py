@@ -16,7 +16,7 @@ from DCHMM import *
 warnings.filterwarnings('ignore')
 
 dataset_list = {
-   'SPI': {'name': 'SharePriceIncrease', 'train_size': '83897', 'test_size': '9715', 'dims': '16', 'length': '60',
+   'SPI': {'name': 'SharePriceIncrease', 'train_size': '83897', 'test_size': '9715', 'dims': '4', 'length': '60',
             'classes': '2', 'batch_size': '4'}}
 
 def setup_logger(logger_name, log_file, level=logging.INFO):
@@ -167,8 +167,8 @@ def main():
 
         if acc_val_value > current_best_acc:
             current_best_acc = acc_val_value
-            torch.save(hmm_model.state_dict(), os.path.join(save_dir, 'HMM_model_epoch_{0}.pkl'.format(epoch)))
-            torch.save(hmm_model.state_dict(), './classify_'+machine_idx+'/HMM_model_' + target_dataset + '_train.pkl')
+            torch.save(hmm_model.model.state_dict(), os.path.join(save_dir, 'HMM_model_epoch_{0}.pkl'.format(epoch)))
+            torch.save(hmm_model.model.state_dict(), './classify_'+machine_idx+'/HMM_model_' + target_dataset + '_train.pkl')
             val_log['val_log'].info("current best val acc:{0} at epoch {1}".format(current_best_acc, epoch))
 
     print("Finish!... saved all results")

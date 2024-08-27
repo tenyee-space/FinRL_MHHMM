@@ -82,9 +82,16 @@ class load_dataset(Dataset):
             
             # 标准化处理
             data[column] = (data[column] - mean) / numpy.sqrt(var + 1e-9)
-        
+
+        # 手动合并特征
+        data['price_range'] = (data['high'] - data['low'])  #  价差
+        data['moving_avg_diff'] = (data['close_30_sma'] - data['close_60_sma'])  # 短期移动平均线与长期移动平均线的差值
+
+        # 保留3-4个新特征
+        selected_features = data[['price_range', 'moving_avg_diff', 'volume']].values
+
         # 更新 self.features
-        self.features = data.values
+        self.features = selected_features
     
     def print_features(self):
         print(self.features)
