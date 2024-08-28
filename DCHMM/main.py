@@ -16,7 +16,7 @@ from DCHMM import *
 warnings.filterwarnings('ignore')
 
 dataset_list = {
-   'SPI': {'name': 'SharePriceIncrease', 'train_size': '83897', 'test_size': '9715', 'dims': '4', 'length': '60',
+   'SPI': {'name': 'SharePriceIncrease', 'train_size': '83897', 'test_size': '9715', 'dims': '3', 'length': '60',
             'classes': '2', 'batch_size': '4'}}
 
 def setup_logger(logger_name, log_file, level=logging.INFO):
