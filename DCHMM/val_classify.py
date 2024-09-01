@@ -111,7 +111,8 @@ def val(args, hmm_model: Model, val_dataset, batch_size, writer, epoch, n_iter, 
     val_log['val_log'].info(
         "val acc:{0}, "
         "val auc:{1},val f1:{2}"
-        " at epoch {3}".format(
+        " at epoch {3}"
+        "".format(
             all_val_acc,
             auc, f1,
             epoch

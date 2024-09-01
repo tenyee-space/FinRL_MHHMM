@@ -16,7 +16,7 @@ from DCHMM import *
 warnings.filterwarnings('ignore')
 
 dataset_list = {
-   'SPI': {'name': 'SharePriceIncrease', 'train_size': '83897', 'test_size': '9715', 'dims': '3', 'length': '60',
+   'SPI': {'name': 'SharePriceIncrease', 'train_size': '8000', 'test_size': '9715', 'dims': '3', 'length': '60',
             'classes': '2', 'batch_size': '4'}}
 
 def setup_logger(logger_name, log_file, level=logging.INFO):
@@ -63,7 +63,7 @@ parser.add_argument('--h-dim', type=int, default=v_dims, metavar='h', help='late
 
 parser.add_argument('--device', type=str, default='cuda:0', help='None')
 parser.add_argument('--lr', type=float, default=0.001, help='learning rate (default: 0.0001)')
-parser.add_argument('--epoch', type=int, default=400, help='training epoch')
+parser.add_argument('--epoch', type=int, default=200, help='training epoch')
 parser.add_argument('--batch-size', type=int, default=dataset_list[target_dataset]['batch_size'], help='batch size')
 parser.add_argument('--init', default='xavier', help='default, this can not be optional')
 parser.add_argument('--optimizer', default='Adam', help='optimizer (Adam or RMSprop, SGD, Adagrad, Momentum, Adadelta)')

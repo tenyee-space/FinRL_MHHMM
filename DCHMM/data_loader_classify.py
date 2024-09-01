@@ -99,6 +99,8 @@ class load_dataset(Dataset):
     def load_new(self):
         # 读取CSV文件
         data = pd.read_csv(self.files_path)
+        # 截取前8000行
+        data = data.iloc[:4000, :]
         
         # 提取特征列
         feature_columns = [
@@ -113,6 +115,7 @@ class load_dataset(Dataset):
         
         # 提取标签列
         labels_data = pd.read_csv(self.labels_path)
+        labels_data = labels_data.iloc[:4000, :]
         self.labels = numpy.zeros_like(labels_data['close'].values) 
         
         # 更新最大值和最小值
