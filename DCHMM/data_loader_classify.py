@@ -20,7 +20,8 @@ class load_dataset(Dataset):
         self.labels_count = 0
         self.max = -numpy.inf
         self.min = numpy.inf
-        self.load_new()
+        # self.load_new()
+        self.load()
 
     def __len__(self):
         return len(self.labels)
@@ -155,30 +156,29 @@ class load_dataset(Dataset):
 
         for i in range(self.dataset_args.num_dim):
             if self.train:
-                file_path = self.files_path[0:-11] + str(i + 1) + self.files_path[-10:]
+                file_path = self.files_path[0:-5] + str(i + 1) + self.files_path[-5:]
             else:
-                file_path = self.files_path[0:-10] + str(i + 1) + self.files_path[-9:]
-            with open(file_path, 'r') as f:
-                rdr = csv.reader(f)
-                next(rdr)  # 跳过第一行
-                for index, row in enumerate(rdr):
-                    for t, colcell in enumerate(row):
-                        if colcell == '?':
-                            self.record_abnormal[index][t][i] = 1
-                        else:
-                            self.features[index][t][i] = float(colcell)
-                            self.max = max(self.max, float(colcell))
-                            self.min = min(self.min, float(colcell))
+                file_path = self.files_path[0:-5] + str(i + 1) + self.files_path[-5:]
+            data = pd.read_excel(file_path)
+            for index in range(size):  # 根据train-size确定行数
+                for t in range(self.dataset_args.max_series_length):  # 根据series-length确定列数
+                    colcell = data.iloc[index, t]
+                    if pd.isnull(colcell):
+                        self.record_abnormal[index][t][i] = 1
+                    else:
+                        self.features[index][t][i] = float(colcell)
+                        self.max = max(self.max, float(colcell))
+                        self.min = min(self.min, float(colcell))
 
-        with open(self.labels_path, 'r') as f:
-            rdr = csv.reader(f)
-            for index, row in enumerate(rdr):
-                if row[0] in self.word_tables.keys():
-                    self.labels.append(self.word_tables[row[0]])
-                else:
-                    self.word_tables[row[0]] = self.labels_count
-                    self.labels.append(self.word_tables[row[0]])
-                    self.labels_count += 1
+        label = pd.read_excel(self.labels_path)
+        for index in range(len(label)):
+            row = label.iloc[index]
+            if row[0] in self.word_tables.keys():
+                self.labels.append(self.word_tables[row[0]])
+            else:
+                self.word_tables[row[0]] = self.labels_count
+                self.labels.append(self.word_tables[row[0]])
+                self.labels_count += 1
 
         self.features = numpy.array(self.features, dtype=float)
         self.labels = numpy.array(self.labels, dtype=float)
@@ -186,14 +186,16 @@ class load_dataset(Dataset):
 
 if __name__ == '__main__':
     parser_dataset = argparse.ArgumentParser(description='dataset')
-    parser_dataset.add_argument('--train-size', type=int, default=83897, help='None')
+    parser_dataset.add_argument('--train-size', type=int, default=316, help='None')
     parser_dataset.add_argument('--test-size', type=int, default=100, help='None')
-    parser_dataset.add_argument('--num-dim', type=int, default=16, help='None')
+    parser_dataset.add_argument('--num-dim', type=int, default=28, help='None')
+    parser_dataset.add_argument('--max-series-length', type=int, default=50, help='None')
+    parser_dataset.add_argument('--num-class', type=int, default=2, help='None')
     args_dataset = parser_dataset.parse_args()
-    train_dataset = load_dataset(args_dataset, './train_data.csv',
-                                 './train_data.csv', train=True)
-    # test_dataset = load_dataset(args_dataset, './data/FingerMovementsDimensionX_TEST.csv',
-    #                             './data/test_label.csv', train=False)
+    train_dataset = load_dataset(args_dataset, '../FingerMovements/train_dim.xlsx',
+                                 '../FingerMovements/train_label.xlsx', train=True)
+    test_dataset = load_dataset(args_dataset, '../FingerMovements/test_dim.xlsx',
+                                '../FingerMovements/test_label.xlsx', train=False)
 
     train_loader = DataLoader(train_dataset, batch_size=1, num_workers=1, drop_last=True, shuffle=False)
     for ibatch, data in enumerate(train_loader):
