@@ -108,7 +108,7 @@ def load_pretrained(dict1, dict2):
     return dict2
 
 parser1 = argparse.ArgumentParser(description='pre-input')
-parser1.add_argument('--target-dataset', type=str, default='SPI', help='None')
+parser1.add_argument('--target-dataset', type=str, default='FM', help='None')
 parser1.add_argument('--machine-idx', type=str, default='v1', help='None')
 parser1.add_argument('--v-dims', type=int, default=128, help='None')
 args1 = parser1.parse_args()
@@ -218,8 +218,8 @@ def main():
     val_set_path = args.dataset_dir + '/' + args.datasetname + '/' + args.datasetname + '_TEST.csv'
     val_label_path = args.dataset_dir + '/' + args.datasetname + '/test_label.csv'
 
-    train_dataset = load_dataset(args, train_set_path, train_label_path, train=True)
-    val_dataset = load_dataset(args, val_set_path, val_label_path, train=False)
+    train_dataset = load_dataset(args, '../FingerMovements/train_dim.xlsx', '../FingerMovements/train_label.xlsx', train=True)
+    val_dataset = load_dataset(args, '../FingerMovements/test_dim.xlsx', '../FingerMovements/test_label.xlsx', train=False)
 
     mi1, ma1 = train_dataset.get_min_max()
     mi2, ma2 = val_dataset.get_min_max()
