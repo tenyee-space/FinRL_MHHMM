@@ -143,10 +143,6 @@ class prior_stacked_chain(nn.Module):
         self.h0 = init_state
         self.h_t = init_state
 
-        # 修改点：确保 init_state 的维度与 h_dim 一致
-        if self.h0.size(1) != h_dim:
-            self.h0 = torch.zeros(self.h0.size(0), h_dim, device=self.h0.device)
-            self.h_t = self.h0
 
     def forward(self, x_t):
         if isinstance(x_t, torch.Tensor):
