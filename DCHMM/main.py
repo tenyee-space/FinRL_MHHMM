@@ -16,7 +16,7 @@ from DCHMM import *
 warnings.filterwarnings('ignore')
 
 dataset_list = {
-   'SPI': {'name': 'SharePriceIncrease', 'train_size': '8000', 'test_size': '9715', 'dims': '3', 'length': '60',
+   'SPI': {'name': 'SharePriceIncrease', 'train_size': '8000', 'test_size': '9715', 'dims': '2', 'length': '60',
             'classes': '2', 'batch_size': '4'}}
 
 def setup_logger(logger_name, log_file, level=logging.INFO):
@@ -125,10 +125,10 @@ def main():
     train_epoch = args.epoch
     batch_size = args.batch_size
 
-    train_set_path = '/root/FinRL_DCHMM/DCHMM/train_data.csv'
-    train_label_path = '/root/FinRL_DCHMM/DCHMM/train_data.csv'
-    val_set_path = '/root/FinRL_DCHMM/DCHMM/trade_data.csv'
-    val_label_path = '/root/FinRL_DCHMM/DCHMM/trade_data.csv'
+    train_set_path = '/root/FinRL_DCHMM/DCHMM/20240917data.csv'
+    train_label_path = '/root/FinRL_DCHMM/DCHMM/20240917data.csv'
+    val_set_path = '/root/FinRL_DCHMM/DCHMM/20240917data.csv'
+    val_label_path = '/root/FinRL_DCHMM/DCHMM/20240917data.csv'
 
     train_dataset = load_dataset(args, train_set_path, train_label_path, train=True)
     val_dataset = load_dataset(args, val_set_path, val_label_path, train=False)

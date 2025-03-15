@@ -20,8 +20,8 @@ class load_dataset(Dataset):
         self.labels_count = 0
         self.max = -numpy.inf
         self.min = numpy.inf
-        # self.load_new()
-        self.load()
+        self.load_new()
+        # self.load()
 
     def __len__(self):
         return len(self.labels)
@@ -60,14 +60,14 @@ class load_dataset(Dataset):
 
     def normal_data_new(self):
         # 将数据转换为 DataFrame 以便处理
-        data = pd.DataFrame(self.features, columns=[
-            'open', 'high', 'low', 'close', 'volume', 'day', 'macd', 'boll_ub',
-            'boll_lb', 'rsi_30', 'cci_30', 'dx_30', 'close_30_sma', 'close_60_sma',
-            'vix', 'turbulence'
-        ])
         # data = pd.DataFrame(self.features, columns=[
-        #     'volume'
+        #     'open', 'high', 'low', 'close', 'volume', 'day', 'macd', 'boll_ub',
+        #     'boll_lb', 'rsi_30', 'cci_30', 'dx_30', 'close_30_sma', 'close_60_sma',
+        #     'vix', 'turbulence'
         # ])
+        data = pd.DataFrame(self.features, columns=[
+            'Open', 'High', 'Low', 'Close', 'Volume'
+        ])
         
         # 遍历每一列进行归一化处理
         for column in data.columns:
@@ -104,20 +104,20 @@ class load_dataset(Dataset):
         data = data.iloc[:4000, :]
         
         # 提取特征列
-        feature_columns = [
-            'open', 'high', 'low', 'close', 'volume', 'day', 'macd', 'boll_ub',
-            'boll_lb', 'rsi_30', 'cci_30', 'dx_30', 'close_30_sma', 'close_60_sma',
-            'vix', 'turbulence'
-        ]
         # feature_columns = [
-        #     'volume'
+        #     'open', 'high', 'low', 'close', 'volume', 'day', 'macd', 'boll_ub',
+        #     'boll_lb', 'rsi_30', 'cci_30', 'dx_30', 'close_30_sma', 'close_60_sma',
+        #     'vix', 'turbulence'
         # ]
+        feature_columns = [
+            'Open', 'High', 'Low', 'Close', 'Volume'
+        ]
         self.features = data[feature_columns].values
         
         # 提取标签列
         labels_data = pd.read_csv(self.labels_path)
         labels_data = labels_data.iloc[:4000, :]
-        self.labels = numpy.zeros_like(labels_data['close'].values) 
+        self.labels = numpy.zeros_like(labels_data['Close'].values)
         
         # 更新最大值和最小值
         self.max = numpy.max(self.features)
