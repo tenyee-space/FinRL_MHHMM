@@ -4,7 +4,7 @@ from torchvision.utils import save_image
 import numpy as np
 import time
 import os
-from model import Model
+from DCHMM.model import Model
 from torch import nn
 from sklearn.metrics import roc_curve
 from sklearn.metrics import auc
@@ -142,14 +142,14 @@ def val_with_gt_pre(args, hmm_model: Model, val_dataset, batch_size, writer, epo
             logit = None
             for index in range(len(input[0])):  # the len of time series
                 if index == 0:
-                    # input_t = input[:, index]
-                    input_t = input
+                    input_t = input[:, index]
+                    # input_t = input
                     input_t_last = torch.zeros_like(input_t)
                     h_t_last = h0
                 else:
                     # 修改点 修改格式
-                    input_t = input
-                    # input_t = input[:, index]
+                    # input_t = input
+                    input_t = input[:, index]
                     input_t_last = input[:, index - 1]
                 if input_t.sum() == 0:
                     break

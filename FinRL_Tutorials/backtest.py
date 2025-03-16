@@ -1,9 +1,18 @@
-import sys
 import pandas as pd
 import numpy as np
-import matplotlib.pyplot as plt
+import os
+import torch
+import logging
 
+from finrl.meta.env_stock_trading.env_stocktrading import StockTradingEnv
+from stable_baselines3 import A2C, DDPG, PPO, SAC, TD3
+from finrl.agents.stablebaselines3.models import DRLAgent
 from finrl.config import INDICATORS, TRAINED_MODEL_DIR
+
+from torch.utils.data import Dataset
+from tensorboardX import SummaryWriter
+
+from DCHMM.DCHMM import DCHMM
 
 train = pd.read_csv('train_data.csv')
 trade = pd.read_csv('trade_data.csv')
@@ -49,16 +58,6 @@ env_kwargs = {
 
 e_trade_gym = StockTradingEnv(df = trade, turbulence_threshold = 70,risk_indicator_col='vix', **env_kwargs)
 env_trade, obs_trade = e_trade_gym.get_sb_env()
-
-import sys
-import torch
-from torch.utils.data import Dataset
-from tensorboardX import SummaryWriter
-import logging
-import os
-# 添加DCHMM模块路径
-sys.path.append('../FinRL_DCHMM')
-from DCHMM.DCHMM import DCHMM
 
 # 创建自定义Dataset类
 class StockTradingDataset(Dataset):
@@ -222,6 +221,7 @@ class Args:
         self.class_num = 2  # 二分类问题
         self.input_fc_dim = 3
         self.cls_fc_dim = 3
+        self.batch_size = 1
 
 # 创建DCHMM模型
 args = Args()
@@ -241,13 +241,7 @@ n_iter = 0
 # 调用val_with_gt_pre方法
 all_gt_y, all_pre_id = dchmm_model.val_with_gt_pre(val_dataset, batch_size, writer, epoch, n_iter, val_log)
 
-from finrl.meta.preprocessor.yahoodownloader import YahooDownloader
-from finrl.meta.env_stock_trading.env_stocktrading import StockTradingEnv
-from finrl.agents.stablebaselines3.models import DRLAgent
-from stable_baselines3 import A2C, DDPG, PPO, SAC, TD3
-
-
-
+# 并行用强化学习来执行预测
 df_account_value_a2c, df_actions_a2c = DRLAgent.DRL_prediction(
     model=trained_a2c,
     environment = e_trade_gym) if if_using_a2c else (None, None)

@@ -1,4 +1,4 @@
-from HMM import *
+from DCHMM.HMM import *
 
 
 class Model(nn.Module):

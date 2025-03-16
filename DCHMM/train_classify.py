@@ -2,7 +2,7 @@ from __future__ import print_function
 import torch.utils.data
 from torchvision.utils import save_image
 import numpy as np
-from model import Model
+from DCHMM.model import Model
 import time
 import os
 

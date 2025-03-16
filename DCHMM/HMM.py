@@ -102,7 +102,7 @@ class MLP(nn.Module):
         #                          nn.Tanh() if activate else nn.Identity())
         self.mlp = nn.Sequential(nn.Linear(in_dim, 4 * out_dim),
                                  nn.GELU(),
-                                 nn.Linear(4 * out_dim, out_dim),
+                                 nn.Linear(out_dim, out_dim),
                                  nn.Tanh() if activate else nn.Identity())
 
     def forward(self, x):
