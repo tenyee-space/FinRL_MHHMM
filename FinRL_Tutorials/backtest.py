@@ -12,7 +12,7 @@ from finrl.config import INDICATORS, TRAINED_MODEL_DIR
 from torch.utils.data import Dataset
 from tensorboardX import SummaryWriter
 
-from DCHMM.DCHMM import DCHMM
+from MHHMM.MHHMM import DCHMM
 
 train = pd.read_csv('train_data.csv')
 trade = pd.read_csv('trade_data.csv')

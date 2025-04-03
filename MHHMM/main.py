@@ -11,13 +11,14 @@ from data_loader_classify import load_dataset
 import logging
 import warnings
 import argparse
-from DCHMM import *
+from MHHMM import *
 
 warnings.filterwarnings('ignore')
 
 dataset_list = {
-   'SPI': {'name': 'SharePriceIncrease', 'train_size': '8000', 'test_size': '9715', 'dims': '2', 'length': '60',
+    'SPI': {'name': 'SharePriceIncrease', 'train_size': '8000', 'test_size': '9715', 'dims': '2', 'length': '60',
             'classes': '2', 'batch_size': '4'}}
+
 
 def setup_logger(logger_name, log_file, level=logging.INFO):
     l = logging.getLogger(logger_name)
@@ -36,7 +37,6 @@ parser1.add_argument('--target-dataset', type=str, default='SPI', help='None')
 parser1.add_argument('--machine-idx', type=str, default='v1', help='None')
 parser1.add_argument('--v-dims', type=int, default=3, help='None')
 args1 = parser1.parse_args()
-
 
 target_dataset = args1.target_dataset
 machine_idx = args1.machine_idx
@@ -75,13 +75,14 @@ parser.add_argument('--cls-fc-dim', type=int, default=v_dims, help='cls FC dim')
 parser.add_argument('--load-pre-train-weight', type=bool, default=False,
                     help='whether or not need to load the pre-train weight')
 parser.add_argument('--pre-train-weight', type=str,
-                    default='./classify_'+ machine_idx +'/HMM_model_' + target_dataset + '_pretrain.pkl',
+                    default='./classify_' + machine_idx + '/HMM_model_' + target_dataset + '_pretrain.pkl',
                     help='VAE-pre-train-weight-path')
 parser.add_argument('--random-seed', type=int, default=1, help='random seed (default: 1)')
 parser.add_argument('--seed', type=int, default=1, help='random seed (default: 1)')
 args, unknown = parser.parse_known_args()
 print(vars(args))
 device = args.device
+
 
 def main():
     torch.cuda.empty_cache()
@@ -125,10 +126,10 @@ def main():
     train_epoch = args.epoch
     batch_size = args.batch_size
 
-    train_set_path = '/root/FinRL_DCHMM/DCHMM/20240917data.csv'
-    train_label_path = '/root/FinRL_DCHMM/DCHMM/20240917data.csv'
-    val_set_path = '/root/FinRL_DCHMM/DCHMM/20240917data.csv'
-    val_label_path = '/root/FinRL_DCHMM/DCHMM/20240917data.csv'
+    train_set_path = '/root/FinRL_DCHMM/MHHMM/20240917data.csv'
+    train_label_path = '/root/FinRL_DCHMM/MHHMM/20240917data.csv'
+    val_set_path = '/root/FinRL_DCHMM/MHHMM/20240917data.csv'
+    val_label_path = '/root/FinRL_DCHMM/MHHMM/20240917data.csv'
 
     train_dataset = load_dataset(args, train_set_path, train_label_path, train=True)
     val_dataset = load_dataset(args, val_set_path, val_label_path, train=False)
@@ -168,12 +169,14 @@ def main():
         if acc_val_value > current_best_acc:
             current_best_acc = acc_val_value
             torch.save(hmm_model.model.state_dict(), os.path.join(save_dir, 'HMM_model_epoch_{0}.pkl'.format(epoch)))
-            torch.save(hmm_model.model.state_dict(), './classify_'+machine_idx+'/HMM_model_' + target_dataset + '_train.pkl')
+            torch.save(hmm_model.model.state_dict(),
+                       './classify_' + machine_idx + '/HMM_model_' + target_dataset + '_train.pkl')
             val_log['val_log'].info("current best val acc:{0} at epoch {1}".format(current_best_acc, epoch))
 
     print("Finish!... saved all results")
     writer.close()
     return current_best_acc
+
 
 if __name__ == '__main__':
     print(str(target_dataset) + 'the best acc is ', main())

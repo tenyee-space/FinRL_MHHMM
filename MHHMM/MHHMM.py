@@ -1,13 +1,13 @@
 from __future__ import print_function
 from torch import optim
-from DCHMM.model import Model
+from MHHMM.model import Model
 import torch
 from tensorboardX import SummaryWriter
 import os
 from datetime import datetime
-from DCHMM.train_classify import train
-from DCHMM.val_classify import val,val_with_gt_pre
-from DCHMM.data_loader_classify import load_dataset
+from MHHMM.train_classify import train
+from MHHMM.val_classify import val,val_with_gt_pre
+from MHHMM.data_loader_classify import load_dataset
 import logging
 import warnings
 import argparse
