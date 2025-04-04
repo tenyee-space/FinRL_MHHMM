@@ -126,10 +126,10 @@ def main():
     train_epoch = args.epoch
     batch_size = args.batch_size
 
-    train_set_path = '/root/FinRL_DCHMM/MHHMM/20240917data.csv'
-    train_label_path = '/root/FinRL_DCHMM/MHHMM/20240917data.csv'
-    val_set_path = '/root/FinRL_DCHMM/MHHMM/20240917data.csv'
-    val_label_path = '/root/FinRL_DCHMM/MHHMM/20240917data.csv'
+    train_set_path = '/root/FinRL_MHHMM/MHHMM/20240917data.csv'
+    train_label_path = '/root/FinRL_MHHMM/MHHMM/20240917data.csv'
+    val_set_path = '/root/FinRL_MHHMM/MHHMM/20240917data.csv'
+    val_label_path = '/root/FinRL_MHHMM/MHHMM/20240917data.csv'
 
     train_dataset = load_dataset(args, train_set_path, train_label_path, train=True)
     val_dataset = load_dataset(args, val_set_path, val_label_path, train=False)

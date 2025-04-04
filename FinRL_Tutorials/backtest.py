@@ -198,7 +198,7 @@ def setup_logger(logger_name, log_file, level=logging.INFO):
     l.addHandler(streamHandler)
 
 # 创建日志目录
-log_dir = '../FinRL_DCHMM/logs'
+log_dir = '../FinRL_MHHMM/logs'
 os.makedirs(log_dir, exist_ok=True)
 
 # 设置日志
